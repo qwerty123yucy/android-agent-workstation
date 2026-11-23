@@ -1,0 +1,35 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://ollama.com",
+    "ANTHROPIC_AUTH_TOKEN": "<YOUR_OLLAMA_API_KEY>",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_DEFAULT_MODEL": "<YOUR_PRIMARY_MODEL>",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "<YOUR_PRIMARY_MODEL>",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "<YOUR_FAST_MODEL>",
+    "CLAUDE_CODE_AUTO_MODE_SERVER": "0"
+  },
+  "model": "<YOUR_PRIMARY_MODEL>",
+  "availableModels": [
+    "<YOUR_PRIMARY_MODEL>",
+    "<YOUR_FAST_MODEL>"
+  ],
+  "modelPicker": {
+    "options": [
+      {
+        "model": "<YOUR_PRIMARY_MODEL>",
+        "label": "primary-model",
+        "description": "Ollama Cloud · Primary coding/reasoning model"
+      },
+      {
+        "model": "<YOUR_FAST_MODEL>",
+        "label": "fast-model",
+        "description": "Ollama Cloud · Fast model"
+      }
+    ],
+    "replaceBuiltInOptions": true
+  },
+  "effortLevel": "high",
+  "autoUpdatesChannel": "stable",
+  "tui": "default",
+  "theme": "dark"
+}

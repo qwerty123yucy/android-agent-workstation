@@ -1,0 +1,37 @@
+MIT License
+
+Copyright (c) 2026 qwerty123yucy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Third-Party & Companion Component Licenses:
+
+1. Custom Termux APK (distributed via GitHub Releases) and its corresponding
+   source code at https://github.com/qwerty123yucy/termux-app (branch `custom`,
+   based on upstream `termux/termux-app` v0.118.3) are licensed under the
+   GNU General Public License v3.0 (GPLv3-only), with Apache-2.0 exceptions
+   inherited from upstream `terminal-emulator` / `terminal-view` / `termux-shared`.
+2. Bundled fonts inside Custom Termux APK:
+   - JetBrains Mono NL: SIL Open Font License 1.1 (OFL-1.1)
+   - Symbols Nerd Font Mono: MIT License / respective icon font licenses
+   - Noto Sans Symbols 2: SIL Open Font License 1.1 (OFL-1.1)
+3. OSC 8 hyperlink storage and test foundations in Custom Termux are adapted
+   from upstream PR termux/termux-app#5390 (by @matthematics1137).

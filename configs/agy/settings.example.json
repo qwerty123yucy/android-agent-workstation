@@ -1,0 +1,20 @@
+{
+  "allowNonWorkspaceAccess": true,
+  "artifactReviewPolicy": "agent-decides",
+  "queuedMessages": "send-immediately",
+  "showFeedbackSurvey": false,
+  "showTips": false,
+  "statusLine": {
+    "type": "command",
+    "command": "python3 /root/.gemini/antigravity-cli/statusline.py",
+    "enabled": true
+  },
+  "title": {
+    "type": "command",
+    "command": "python3 /root/.gemini/antigravity-cli/title.py",
+    "enabled": true
+  },
+  "trustedWorkspaces": [
+    "/root"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+    "ANTHROPIC_AUTH_TOKEN": "<YOUR_OPENROUTER_API_KEY>",
+    "ANTHROPIC_API_KEY": "",
+    "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY": "1",
+    "CLAUDE_CODE_AUTO_MODE_SERVER": "0"
+  },
+  "model": "<YOUR_OPENROUTER_MODEL>",
+  "effortLevel": "high",
+  "autoUpdatesChannel": "stable",
+  "tui": "default",
+  "theme": "dark"
+}
