@@ -1,21 +1,21 @@
 # Android Agent Workstation
 
-**把一台免 Root、免电脑的 Android 手机，打造成自包含、顺手且安全的本地 AI Agent 开发与真机闭环工作站。**
+**在免 Root、免电脑的 Android 手机上搭建本地 AI Agent 开发与真机调试环境的方案与工具包。**
 
-> Turn an unrooted Android phone into a standalone AI Agent workstation: **Custom Termux** (tuned for modern Agent TUIs) + **PRoot Debian (`--isolated`)** + **CLI AI Agents (`agy` / Claude Code / Codex)** + **Host Loopback ADB Closed-Loop** + **Offline APK & Headless UI Tooling**.
+> Practical guide and toolkit for running CLI AI agents (`agy`, Claude Code, Codex) and on-device Android verification on an unrooted phone via Custom Termux, isolated PRoot Debian, loopback wireless ADB, and Gradle-free APK tooling.
 
 ---
 
 ## 为什么做这套方案？
 
-在手机上直接跑现代 CLI AI Agent（如 Antigravity CLI `agy`、Claude Code、Codex）并完成真实工程开发，通常会连续撞上四堵墙：
+在手机上直接运行 CLI AI Agent（如 Antigravity CLI `agy`、Claude Code、Codex）并完成实际开发，通常会遇到四个主要问题：
 
-1. **官方 Termux 跑现代 TUI 体验割裂**：跨读块刷屏撕裂、弹收软键盘触发 `SIGWINCH` 导致满屏重排、流式输出时无法锁住回滚区阅读、折行 URL 点不开、鼠标捕获模式下点击链接误透传、左侧抽屉全显示 `proot` 看不出里面在跑什么、Nerd Font 与状态符号缺字变豆腐块。
-2. **原生 Termux（Bionic）与主流 Linux ARM64 工具链不兼容**：大量 CLI Agent、浏览器引擎与构建工具要求标准 glibc Linux 环境，同时又要避免容器误触手机个人文件。
-3. **手机端没有 Android Emulator，Agent 写完 App 看不到真实运行效果**：Paparazzi / Roborazzi 依赖的 LayoutLib 缺少官方 `linux-arm64` 构建，Shizuku `rish` 也无法直接跑进 glibc PRoot。
-4. **换机、重装或从 Google Play 版 Termux 迁移踩坑极多**：直接备份恢复 `$PREFIX` 会破坏 Play 版软链，普通打包会破坏 PRoot 的 `.l2s` 硬链接映射与 Agent 会话 SQLite WAL 状态。
+1. **官方 Termux 跑现代 TUI 体验不佳**：跨读块刷新闪烁、弹收软键盘触发 `SIGWINCH` 导致满屏重排、流式输出时无法停留在回滚区阅读、折行 URL 点不开、鼠标捕获模式下点击链接误透传、左侧抽屉只显示 `proot` 看不出内部命令、Nerd Font 与状态符号缺字。
+2. **原生 Termux（Bionic）与主流 Linux ARM64 工具链存在兼容差异**：大量 CLI Agent、浏览器引擎与构建工具依赖标准 glibc Linux 环境，同时又需要隔离容器以防误触手机个人文件。
+3. **手机端没有 Android Emulator，Agent 写完 App 难以验证实际运行效果**：Paparazzi / Roborazzi 依赖的 LayoutLib 缺少官方 `linux-arm64` 构建，Shizuku `rish` 也无法直接在 glibc PRoot 内运行。
+4. **换机、重装或从 Google Play 版 Termux 迁移容易出问题**：直接备份恢复 `$PREFIX` 会破坏 Play 版软链，普通打包会破坏 PRoot 的 `.l2s` 硬链接映射与 Agent 会话 SQLite WAL 状态。
 
-本仓库沉淀了一套经过日常高频实测的完整方法与开箱工具包，将这四个环节全部打通成一个闭环。
+本仓库整理了一套经过实测的流程、配置模板与脚本工具，依次解决上述问题。
 
 ---
 
@@ -46,7 +46,7 @@
 │  └─ 工程闭环工具：                                                          │
 │     · /usr/bin/adb（协议 1.0.41，复用外层 5037）或 curl 调受限 HTTP 桥      │
 │     · chromium-headless-shell --use-gl=disabled（无 GPU 软渲染 UI 预检）    │
-│     · ECJ + aapt2 + D8 + zipalign + apksigner（零 Gradle 秒级离线编 APK）   │
+│     · ECJ + aapt2 + D8 + zipalign + apksigner（零 Gradle 离线编译签名 APK） │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -64,13 +64,13 @@
 | **非 IME 布局底边距抖动修复**（`#5442`） | 开关侧栏或扩展键栏不再误触发双重 `SIGWINCH` |
 | **文档绝对行锚定 + `OverScroller` 亚像素滚动**（`#5443`） | 流式输出时上滑回看自动锁定位置，滑回底端自动恢复跟随 |
 | **软键盘主屏平移免缩放**（`#5444`） | 主屏弹收输入法仅平移视口不发 `SIGWINCH` 重排；备用屏（`vim`/`tmux`）保持标准缩放 |
-| **双排扩展键 + `SCROLL` 锁键 + 返回手势抽屉** | 单手一键锁滚动、返回手势呼出多会话抽屉、64 KiB Session IO 缓冲、Android 16 16 KB ELF 对齐 |
+| **双排扩展键 + `SCROLL` 锁键 + 返回手势抽屉** | 提供 `SCROLL` 滚动锁定键、返回手势开关会话抽屉、64 KiB Session IO 缓冲、Android 16 16 KB ELF 对齐 |
 | **Warm Paper 日/夜原地自适应主题 + Mode 2031** | `onConfigurationChanged` 不重建 Activity 原地切深浅色、抽屉三态切换键、克制型 WCAG 对比度兜底 |
 | **侧栏实时命令穿透 PRoot + OSC 标题优先** | 穿透 `proot` 识别 `debian · agy` / `debian · claude`，OSC 动态标题占主行、真实命令留副行，抽屉关闭零轮询 |
 | **OSC 8 超链接 + 布局感知多行 URL 提取** | 自动拼接卡片/引用栏内折行长链接、柔和极细下划线、鼠标捕获模式防透传、`file://` 点击复制路径 |
 | **四层原生有序字体回退链（API 29+）** | JetBrains Mono NL 四字重 → Symbols Nerd Font Mono → Noto Sans Symbols 2（不劫持彩色 Emoji）→ 系统 `monospace` |
 
-### 2. 开箱即用的工具包与配置模板
+### 2. 工具包与配置模板目录
 
 | 目录 | 内容说明 |
 | :--- | :--- |
@@ -83,7 +83,7 @@
 
 ---
 
-## 5 分钟快速上手
+## 快速开始
 
 1. **安装 Custom Termux**
    - 从本仓库 [Releases](https://github.com/qwerty123yucy/android-agent-workstation/releases) 下载最新签名版 `termux-app_v0.118.3+custom.cef31f0_arm64-v8a.apk`（支持 Android 16 / 16 KB 页对齐），或按 [`termux-custom/README.md`](termux-custom/README.md) 自行从源码编译。

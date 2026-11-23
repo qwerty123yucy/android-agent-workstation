@@ -1,6 +1,6 @@
 # 05. 端到端闭环开发：Headless Chromium 预检 + 零 Gradle 离线编译 APK
 
-在手机 ARM64 PRoot 容器里做移动端开发，可以串起一条极快的本地闭环产线：
+在手机 ARM64 PRoot 容器里做移动端开发，可以将以下四个环节串联为本地闭环流程：
 **代码编写 → 无头浏览器预检（Web/WebView）→ 零 Gradle 离线编译签名 APK → 真机 ADB 安装与视觉/手势验收 → 自动修复。**
 
 ---
@@ -14,7 +14,7 @@ PRoot ARM64 容器内没有物理 GPU 或 PCI 设备，直接启动 `/usr/bin/ch
    ```bash
    apt update && apt install -y chromium-headless-shell fonts-wqy-zenhei
    ```
-2. 使用 Skia 纯软件渲染（`--use-gl=disabled`）并显式剔除 `--enable-unsafe-swiftshader`。本仓库提供了开箱可用的检查脚本 [`scripts/proot/headless-ui-check.mjs`](../scripts/proot/headless-ui-check.mjs)，可在指定手机视口（如横屏 `844×390`、`780×360` 或竖屏 `390×844` @ `deviceScaleFactor=2`）下自动完成：
+2. 使用 Skia 纯软件渲染（`--use-gl=disabled`）并显式剔除 `--enable-unsafe-swiftshader`。本仓库提供了检查脚本 [`scripts/proot/headless-ui-check.mjs`](../scripts/proot/headless-ui-check.mjs)，可在指定手机视口（如横屏 `844×390`、`780×360` 或竖屏 `390×844` @ `deviceScaleFactor=2`）下自动完成：
    - 零 `pageerror` / `console.error` 断言；
    - HUD 胶囊、标签、按钮的水平文本溢出检测（`scrollWidth > clientWidth + 1`）；
    - 同级控件两两 `getBoundingClientRect()` 重叠碰撞检测；

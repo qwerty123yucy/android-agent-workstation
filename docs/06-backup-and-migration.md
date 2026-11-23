@@ -16,7 +16,7 @@
 
 ## 二、备份步骤（在旧环境「外层 Termux」执行）
 
-1. **彻底退出所有 Agent 与 PRoot 会话**（连续执行 `exit` 回到外层 Termux 提示符，确认无后台 `proot` 进程）。
+1. **先退出所有运行中的 Agent 与 PRoot 会话**（连续执行 `exit` 回到外层 Termux 提示符，确认无后台 `proot` 进程）。
 2. 执行备份脚本（支持通过 `PROOT_DISTRO` / `BACKUP_DIR` / `TERMUX_APK` 环境变量定制）：
    ```bash
    bash ~/workstation/scripts/host-termux/backup.sh

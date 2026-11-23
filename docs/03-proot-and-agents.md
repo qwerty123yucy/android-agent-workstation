@@ -5,7 +5,7 @@
 ## 一、手机系统防杀后台（一次性）
 
 在 **设置 → 开发者选项** 中完成两项关键配置：
-1. 开启 **停用子进程限制**（Android 12+ 必开，防止 Phantom Process Killer 在后台静默杀掉 PRoot、Agent 或编译进程）。
+1. 开启 **停用子进程限制**（Android 12+ 建议开启，防止 Phantom Process Killer 在后台终止 PRoot、Agent 或编译进程）。
 2. 将 Termux 的系统电池策略设为 **不受限制 / 允许后台运行**，并在多任务卡片上按需锁定。
 
 ---
@@ -28,7 +28,7 @@ pkg install -y proot-distro tmux zstd android-tools python aapt2
 
 > **踩坑提醒**：Termux 是滚动发行版。如果跳过 `pkg upgrade` 直接装 `android-tools`，新装的 `adb` 依赖新版 NDK `libc++_shared.so`，会直接报：
 > `CANNOT LINK EXECUTABLE "adb": cannot locate symbol "_ZNSt6__ndk113__hash_memoryEPKvm"`。
-> 先执行 `pkg upgrade -y`（或至少 `pkg install --only-upgrade -y libc++`）即可根治。
+> 先执行 `pkg upgrade -y`（或至少 `pkg install --only-upgrade -y libc++`）即可解决。
 
 ### 2. 安装 Debian 13 并部署通用启动器 `proot-debian`
 
@@ -76,7 +76,7 @@ export GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file
 
 ---
 
-## 四、Antigravity CLI (`agy`) 部署与 Custom Termux 黄金联动
+## 四、Antigravity CLI (`agy`) 部署与 Custom Termux 侧栏联动
 
 ### 1. 安装
 ```bash

@@ -21,7 +21,7 @@
 2. 开启 **无线调试**（Android 11+，首次激活需连任意 Wi-Fi）
 3. 开启 **充电时不休眠**（避免验收时自动锁屏导致截屏和点击失效）
 4. 开启 **停用子进程限制**（Android 12+）
-5. **国产 ROM 必开开关**（不开启会导致静默装包失败或 `input tap/swipe` 报 `INJECT_EVENTS` 拒绝）：
+5. **国产 ROM 额外开关**（不开启会导致静默装包失败或 `input tap/swipe` 报 `INJECT_EVENTS` 拒绝）：
    - **OPPO / 一加 / 真我（ColorOS）**：开启 **禁止权限监控**
    - **小米（HyperOS / MIUI）**：开启 **USB 调试（安全设置）**
 
@@ -93,7 +93,7 @@ curl -fsS -H "X-Bridge-Token: $TOKEN" "$BRIDGE/health"
 curl -fsS -X POST -H "X-Bridge-Token: $TOKEN" --data-binary @./app-debug.apk "$BRIDGE/install"
 # 启动测试 App
 curl -fsS -X POST -H "X-Bridge-Token: $TOKEN" -H "Content-Type: application/json" -d '{"clear_data": false}' "$BRIDGE/launch"
-# 抓 UI 树与无损截屏
+# 抓 UI 树与 PNG 截屏
 curl -fsS -H "X-Bridge-Token: $TOKEN" "$BRIDGE/ui-tree" -o ./ui.xml
 curl -fsS -H "X-Bridge-Token: $TOKEN" "$BRIDGE/screenshot" -o ./screen.png
 # 注入点击 / 滑动 / 按键 / 文本
@@ -112,7 +112,7 @@ curl -fsS -X POST -H "X-Bridge-Token: $TOKEN" "$BRIDGE/stop"
    python3 scripts/proot/adb-check.py
    ```
 2. 核对 `adb version` 第一行与原生 Termux 一致（通常同为 `1.0.41`），确认直接命中外层 Server。
-3. **三条必守铁律**：
+3. **三条使用约束**：
    - **严禁在 PRoot 内执行 `adb kill-server` 或无线 `adb pair`**；若断连最多尝试一次 `adb connect 127.0.0.1:5555`，仍不通则退回原生 Termux 重连。
    - **所有脚本和命令始终显式加 `-s 127.0.0.1:5555`**：ADB daemon 重启后经常自动探测本地 5555 端口并同时显示 `emulator-5554` 与 `127.0.0.1:5555` 两条记录，导致裸 `adb` 报 `more than one device/emulator`。
    - **全程走 TCP 流（不依赖 `/sdcard`）**：
@@ -133,7 +133,7 @@ curl -fsS -X POST -H "X-Bridge-Token: $TOKEN" "$BRIDGE/stop"
 ### 1. 中文 UTF-8 文本输入避坑
 - **不要用 `adb shell input text` 输中文**：它注入硬件键盘事件，绕过输入法拼音组词，直接输出乱码或原始 ASCII。
 - **不要依赖后台 `IClipboard` 写入 + `KEYCODE_PASTE (279)`**：Android 10+ 限制非前台焦点的 UID 2000 读写剪贴板。
-- **首选无损方式**：对于支持分享/消息入口的 App，直接走 Binder `ACTION_SEND`（`text/plain`），并将 `--es` 内容包在单条 `adb shell "..."` 的单引号内，避免远端 `/system/bin/sh` 按空格拆参：
+- **推荐方式**：对于支持分享/消息入口的 App，直接走 Binder `ACTION_SEND`（`text/plain`），并将 `--es` 内容包在单条 `adb shell "..."` 的单引号内，避免远端 `/system/bin/sh` 按空格拆参：
   ```bash
   adb -s 127.0.0.1:5555 shell "am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT '你好，这是一段 UTF-8 文本' -n <包名>/<分享入口Activity>"
   ```

@@ -10,7 +10,7 @@
 
 | # | 提交 / 上游 PR | 核心改造 | 对 AI Agent TUI 的直接价值 |
 | :-: | :--- | :--- | :--- |
-| 1 | `1bd1a25f` ↔ `#5441` | **DECSET 2026 同步输出**（`CSI ? 2026 h/l`、`DECRQM`、100 ms 单调安全超时） | 彻底消除 `agy`、`claude`、`tmux`、`neovim` 跨读块刷屏闪烁与画面撕裂 |
+| 1 | `1bd1a25f` ↔ `#5441` | **DECSET 2026 同步输出**（`CSI ? 2026 h/l`、`DECRQM`、100 ms 单调安全超时） | 减少 `agy`、`claude`、`tmux`、`neovim` 跨读块刷新时的闪烁与撕裂 |
 | 2 | `5c6f6185` ↔ `#5442` | **修复非 IME 布局底边距抖动** | 软键盘收起状态下开关左侧抽屉或切换扩展键栏，不再误套用陈旧 `lastMarginBottom` 触发双重 `SIGWINCH` |
 | 3 | `0ce2b392` ↔ `#5443` | **文档绝对行视口锚定 + `OverScroller` 亚像素滚动** | `TerminalBuffer` 维护单调文档行号，Agent 流式输出时上翻回看自动锁住当前内容，滑回底端或键入自动恢复跟随 |
 | 4 | `952f309e` ↔ `#5444` | **软键盘主屏平移免缩放**（`soft-keyboard-pan-main-screen`） | 解耦主屏逻辑行数 `mRows` 与可视行数 `mVisualRows`，弹收键盘仅平移视口不发 `SIGWINCH` 重排；备用屏（`?1049h` 如 `vim`/`less`/`tmux`）与浮窗自动回退标准行为 |
@@ -60,7 +60,7 @@ terminal-onclick-url-open = true
 
 ## 四、重要避坑：从 Google Play 版 Termux 迁移
 
-如果你手机上原本装的是 **Google Play 商店版 Termux**，切换到任何 F-Droid / GitHub / 自编译版时务必注意两个隐藏大坑：
+如果你手机上原本装的是 **Google Play 商店版 Termux**，切换到任何 F-Droid / GitHub / 自编译版时需要注意两个关键差异：
 
 1. **不能直接覆盖安装**：签名证书不同，必须先备份再卸载旧版，最后安装新版。
 2. **绝不能把 Play 版的 `$PREFIX` 打包覆盖到新版**：
