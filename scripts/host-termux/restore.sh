@@ -39,16 +39,23 @@ echo "[3/5] Restoring host Termux \$HOME and custom \$PREFIX/bin scripts..."
 tar --no-same-owner --delay-directory-restore -xzpf "$IN_DIR/termux-home.tar.gz" -C "$HOME"
 if [ -f "$IN_DIR/custom-bin.tar.gz" ]; then
     tar --no-same-owner --skip-old-files -xzpf "$IN_DIR/custom-bin.tar.gz" -C "$PREFIX/bin"
-    # Adapt hardcoded shebangs if restoring into a coexist package (e.g. non-com.termux PREFIX)
+    # Adapt hardcoded shebangs on text scripts if restoring into a coexist package (non-com.termux PREFIX)
     if [ "$PREFIX" != "/data/data/com.termux/files/usr" ]; then
         while IFS= read -r entry; do
             name="${entry#./}"
             [ -n "$name" ] && [ -f "$PREFIX/bin/$name" ] || continue
-            if head -n 1 "$PREFIX/bin/$name" | grep -q "/data/data/com.termux/files/usr"; then
+            if LC_ALL=C head -c 64 "$PREFIX/bin/$name" | grep -q "^#!/data/data/com.termux/files/usr"; then
                 sed -i "s|/data/data/com.termux/files/usr|$PREFIX|g" "$PREFIX/bin/$name"
                 chmod 700 "$PREFIX/bin/$name"
             fi
         done < <(tar -tzf "$IN_DIR/custom-bin.tar.gz")
+    fi
+    if [ -f "$PREFIX/bin/vroot" ]; then
+        chmod 755 "$PREFIX/bin/vroot"
+    fi
+    if [ -f "$PREFIX/bin/vroot-debian" ]; then
+        chmod 700 "$PREFIX/bin/vroot-debian"
+        ln -sf vroot-debian "$PREFIX/bin/debian-vr"
     fi
 fi
 

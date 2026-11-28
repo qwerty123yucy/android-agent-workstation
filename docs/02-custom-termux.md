@@ -1,12 +1,12 @@
 # 02. Custom Termux：定制特性、配置、构建与迁移避坑
 
-在手机上重度使用 `agy`、Claude Code、Codex、`tmux` 这类高刷新率全屏/行内 TUI 时，官方版 Termux 的很多默认行为会带来高频摩擦。我们的定制版基于官方正式版 **`v0.118.3`**，围绕移动端 AI Agent 体验做了 **10 单分层改造**（源码仓库：[`qwerty123yucy/termux-app@custom`](https://github.com/qwerty123yucy/termux-app/tree/custom)，当前 `versionCode=1013`）。
+在手机上重度使用 `agy`、Claude Code、Codex、`tmux` 这类高刷新率全屏/行内 TUI 时，官方版 Termux 的很多默认行为会带来高频摩擦。我们的定制版基于官方正式版 **`v0.118.3`**，围绕移动端 AI Agent 体验做了 **11 单分层改造**（源码仓库：[`qwerty123yucy/termux-app@custom`](https://github.com/qwerty123yucy/termux-app/tree/custom)，当前 `versionCode=1014`）。
 
 ---
 
-## 一、10 单分层改造详解
+## 一、11 单分层改造详解
 
-前 4 单保持极简与上游 PR 一一对应，后 6 单将本地增强干净隔离：
+前 4 单保持极简与上游 PR 一一对应，后 7 单将本地增强干净隔离：
 
 | # | 提交 / 上游 PR | 核心改造 | 对 AI Agent TUI 的直接价值 |
 | :-: | :--- | :--- | :--- |
@@ -20,6 +20,7 @@
 | 8 | `0436dc6b` | **OSC 8 超链接 + 布局感知多行 URL 提取器** | 单元格级 OSC 8（改编自上游 `#5390`，1024 槽位 GC、宽字符与重排支持）；修复 `getWordAtLocation()` 回滚区越界与 CJK 偏移；`TerminalUrlExtractor` 自动拼接跨行折行、缩进、引用栏（`│`/`>`）、卡片框、分屏与右侧滚动条中的完整 URL |
 | 9 | `91f03c29` | **链接交互升级与鼠标捕获防透传** | OSC 8 低透明度极细下划线；本地默认开启 `terminal-onclick-url-open`；在 `agy`/`tmux` 等鼠标捕获模式下点中链接自动拦截，不向下层 TUI 泄漏误触左键；`http(s)://` 直跳浏览器，`file://` 解码复制路径到剪贴板；`Select URL` 支持单击直跳/长按复制 |
 | 10 | `cef31f04` | **API 29+ 四层原生有序字体回退链** | `TerminalFontLoader` 使用 `Typeface.CustomFallbackBuilder` 组装：① 主字体（`~/.termux/font*.ttf` 或内置 JetBrains Mono NL 四字重）→ ② `SymbolsNerdFontMono` → ③ `NotoSansSymbols2`（过滤 `Emoji_Presentation=Yes` 防劫持彩色 Emoji）→ ④ 系统 `monospace`（CJK 与彩色 Emoji） |
+| 11 | `36106fb3` | **侧栏会话兼容 `vroot` 容器探测** | `SessionProcessInspector` 同时通过命令行与 `/proc/<pid>/exe` 识别带或不带 `--kill-on-exit` 的 `vroot` 会话，兼容 `containers/<distro>/rootfs` 目录层级提取，统一显示 `debian · agy` 等标签 |
 
 ---
 

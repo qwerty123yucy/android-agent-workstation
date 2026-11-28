@@ -29,7 +29,7 @@
 └───────────────────────────────────▲────────────────────────────────────────┘
                                     │ 127.0.0.1:5555（本机无线调试回环）
 ┌───────────────────────────────────┴────────────────────────────────────────┐
-│  Layer 1：Custom Termux（v0.118.3+custom，10 单面向 Agent TUI 增强）        │
+│  Layer 1：Custom Termux（v0.118.3+custom，11 单面向 Agent TUI 增强）        │
 │  ├─ DECSET 2026 同步输出 / 文档行锚定与亚像素滚动 / 主屏免 SIGWINCH 平移    │
 │  ├─ Warm Paper 日夜自适应主题 + Mode 2031 / 四层原生字体与 Nerd Font 回退   │
 │  ├─ 侧栏穿透 PRoot 显示真实命令 + OSC 标题优先 / OSC 8 与多行 URL 点击直跳  │
@@ -56,7 +56,7 @@
 
 ### 1. Custom Termux（面向 AI Agent 的终端底层优化）
 
-基于上游 `termux/termux-app` `v0.118.3`，共 10 单分层改造（前 4 单已提交上游 PR，后 6 单为本地增强，完整源码托管于 [`qwerty123yucy/termux-app` (`custom` 分支)](https://github.com/qwerty123yucy/termux-app/tree/custom)，预编译签名版 APK 见本仓库 **Releases**）：
+基于上游 `termux/termux-app` `v0.118.3`，共 11 单分层改造（前 4 单已提交上游 PR，后 7 单为本地增强，完整源码托管于 [`qwerty123yucy/termux-app` (`custom` 分支)](https://github.com/qwerty123yucy/termux-app/tree/custom)，预编译签名版 APK 见本仓库 **Releases**）：
 
 | 能力 | 解决的问题 |
 | :--- | :--- |
@@ -66,7 +66,7 @@
 | **软键盘主屏平移免缩放**（`#5444`） | 主屏弹收输入法仅平移视口不发 `SIGWINCH` 重排；备用屏（`vim`/`tmux`）保持标准缩放 |
 | **双排扩展键 + `SCROLL` 锁键 + 返回手势抽屉** | 提供 `SCROLL` 滚动锁定键、返回手势开关会话抽屉、64 KiB Session IO 缓冲、Android 16 16 KB ELF 对齐 |
 | **Warm Paper 日/夜原地自适应主题 + Mode 2031** | `onConfigurationChanged` 不重建 Activity 原地切深浅色、抽屉三态切换键、克制型 WCAG 对比度兜底 |
-| **侧栏实时命令穿透 PRoot + OSC 标题优先** | 穿透 `proot` 识别 `debian · agy` / `debian · claude`，OSC 动态标题占主行、真实命令留副行，抽屉关闭零轮询 |
+| **侧栏实时命令穿透容器 + OSC 标题优先** | 穿透 `proot` / `vroot` 识别 `debian · agy` / `debian · claude`，OSC 动态标题占主行、真实命令留副行，抽屉关闭零轮询 |
 | **OSC 8 超链接 + 布局感知多行 URL 提取** | 自动拼接卡片/引用栏内折行长链接、柔和极细下划线、鼠标捕获模式防透传、`file://` 点击复制路径 |
 | **四层原生有序字体回退链（API 29+）** | JetBrains Mono NL 四字重 → Symbols Nerd Font Mono → Noto Sans Symbols 2（不劫持彩色 Emoji）→ 系统 `monospace` |
 
@@ -86,7 +86,7 @@
 ## 快速开始
 
 1. **安装 Custom Termux**
-   - 从本仓库 [Releases](https://github.com/qwerty123yucy/android-agent-workstation/releases) 下载最新签名版 `termux-app_v0.118.3+custom.cef31f0_arm64-v8a.apk`（支持 Android 16 / 16 KB 页对齐），或按 [`termux-custom/README.md`](termux-custom/README.md) 自行从源码编译。
+   - 从本仓库 [Releases](https://github.com/qwerty123yucy/android-agent-workstation/releases) 下载最新签名版 `termux-app_v0.118.3+custom.36106fb_arm64-v8a.apk`（支持 Android 16 / 16 KB 页对齐），或按 [`termux-custom/README.md`](termux-custom/README.md) 自行从源码编译。
    - 打开手机 **开发者选项**，开启 **停用子进程限制**（Android 12+）并将 Termux 设为不受电池优化限制。
 
 2. **初始化外层 Termux 与 PRoot Debian (`--isolated`)**
@@ -129,7 +129,7 @@
 ## 详细教程目录
 
 - [01. 整体架构与设计取舍](docs/01-architecture.md)
-- [02. Custom Termux：10 项底层增强、配置、构建与 Play 版迁移避坑](docs/02-custom-termux.md)
+- [02. Custom Termux：11 项底层增强、配置、构建与 Play 版迁移避坑](docs/02-custom-termux.md)
 - [03. 外层 Termux、PRoot Debian (`--isolated`) 与 `agy` / Claude Code 深度调优](docs/03-proot-and-agents.md)
 - [04. 宿主机无线 ADB 闭环：受限 HTTP 桥 vs 直连 `5037` 与 Android 16 真机技巧](docs/04-host-adb-loopback.md)
 - [05. 端到端闭环开发：Headless Chromium 预检 + 零 Gradle 离线编译 APK](docs/05-closed-loop-dev.md)

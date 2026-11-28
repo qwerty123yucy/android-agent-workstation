@@ -16,14 +16,14 @@
 
 ## 二、备份步骤（在旧环境「外层 Termux」执行）
 
-1. **先退出所有运行中的 Agent 与 PRoot 会话**（连续执行 `exit` 回到外层 Termux 提示符，确认无后台 `proot` 进程）。
+1. **先退出所有运行中的 Agent 与容器会话**（连续执行 `exit` 回到外层 Termux 提示符，确认无后台 `proot` / `vroot` 进程）。
 2. 执行备份脚本（支持通过 `PROOT_DISTRO` / `BACKUP_DIR` / `TERMUX_APK` 环境变量定制）：
    ```bash
    bash ~/workstation/scripts/host-termux/backup.sh
    ```
 3. 脚本会自动完成 5 步并自检：
    - 导出 `restore.sh`（如通过 `TERMUX_APK=/path/to/custom.apk` 指定了安装包也会一并拷出）；
-   - 通过 `dpkg -S` 精准筛出 `$PREFIX/bin` 下**不属于系统包**的用户自定义脚本（如 `proot-debian`），打包为 `custom-bin.tar.gz`，绝不打包系统二进制或 Play 版软链；
+   - 通过 `dpkg -S` 精准筛出 `$PREFIX/bin` 下**不属于系统包**的用户自定义命令或启动器（如 `proot-debian`、`vroot`、`vroot-debian`），打包为 `custom-bin.tar.gz`，绝不打包系统二进制或 Play 版软链（恢复时若存在 `vroot-debian` 会自动恢复权限与 `debian-vr` 别名软链）；
    - 打包外层 Termux `$HOME`（排除 `~/storage` 软链）为 `termux-home.tar.gz`；
    - 使用 `proot-distro backup debian | zstd -1 -T0` 导出完整容器为 `debian-proot.tar.zst`；
    - 校验压缩包完整性、归档条目数与关键路径，并生成 `SHA256SUMS.txt`。

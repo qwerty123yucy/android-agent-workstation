@@ -33,9 +33,9 @@ else
     exit 1
 fi
 
-if pgrep -x proot >/dev/null 2>&1; then
-    echo "[WARN] Active proot processes detected!"
-    echo "       Exit all PRoot and Agent sessions first so SQLite WAL logs flush cleanly."
+if pgrep -x proot >/dev/null 2>&1 || pgrep -x vroot >/dev/null 2>&1; then
+    echo "[WARN] Active proot / vroot container processes detected!"
+    echo "       Exit all container and Agent sessions first so SQLite WAL logs flush cleanly."
     read -r -p "Continue anyway? [y/N] " ans
     if [[ ! "${ans:-}" =~ ^[Yy]$ ]]; then
         exit 1
@@ -68,6 +68,9 @@ fi
 HAS_APK=0
 if [ -n "$TERMUX_APK" ] && [ -f "$TERMUX_APK" ]; then
     cp -f "$TERMUX_APK" "$OUT_DIR/termux-custom-arm64-v8a.apk"
+    HAS_APK=1
+elif [ -f "$ROOTFS_DIR/root/migration/termux-custom-arm64-v8a.apk" ]; then
+    cp -f "$ROOTFS_DIR/root/migration/termux-custom-arm64-v8a.apk" "$OUT_DIR/termux-custom-arm64-v8a.apk"
     HAS_APK=1
 fi
 
